@@ -1,0 +1,134 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}Student Dashboard – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0 fw-bold">Welcome, {{ student.user.first_name }}!</h4>
+        <small class="text-muted">{{ student.student_id }} &bull; {{ student.current_program|default:"No program assigned" }}</small>
+    </div>
+    <a href="{% url 'get_recommendations' %}" class="btn btn-primary">
+        <i class="bi bi-lightbulb me-2"></i>Generate Recommendations
+    </a>
+</div>
+
+{% if not profile_complete %}
+<div class="alert alert-warning d-flex align-items-center gap-3 mb-4">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <div>
+        <strong>Complete your profile</strong> to unlock recommendations.
+        {% if not has_kcse %}<a href="{% url 'kcse_results' %}" class="alert-link ms-2">Add KCSE Results →</a>{% endif %}
+        {% if not has_interests %}<a href="{% url 'student_interests' %}" class="alert-link ms-2">Complete Interest Survey →</a>{% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Stats row -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <i class="bi bi-clipboard-check text-success fs-3 mb-1"></i>
+            <div class="fw-bold fs-5">{% if has_kcse %}✓{% else %}–{% endif %}</div>
+            <div class="text-muted small">KCSE Results</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <i class="bi bi-heart text-danger fs-3 mb-1"></i>
+            <div class="fw-bold fs-5">{% if has_interests %}✓{% else %}–{% endif %}</div>
+            <div class="text-muted small">Interest Survey</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <i class="bi bi-lightbulb text-warning fs-3 mb-1"></i>
+            <div class="fw-bold fs-5">{{ recommendations|length }}</div>
+            <div class="text-muted small">Recommendations</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <i class="bi bi-calendar-check text-info fs-3 mb-1"></i>
+            <div class="fw-bold fs-5">{{ sessions|length }}</div>
+            <div class="text-muted small">Advisory Sessions</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recommendations -->
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-lightbulb me-2 text-warning"></i>Top Recommendations</span>
+                <a href="{% url 'view_recommendations' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                {% if recommendations %}
+                <div class="list-group list-group-flush">
+                    {% for rec in recommendations %}
+                    <div class="list-group-item px-3 py-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="fw-semibold">{{ rec.program.name }}</div>
+                                <small class="text-muted">{{ rec.program.get_faculty_display }} &bull; {{ rec.program.duration_years }} years</small>
+                            </div>
+                            <span class="badge badge-score {% if rec.match_score >= 70 %}score-high{% elif rec.match_score >= 50 %}score-mid{% else %}score-low{% endif %}">
+                                {{ rec.match_score }}%
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-lightbulb fs-2 mb-2 d-block"></i>
+                    No recommendations yet. Complete your profile and click "Generate Recommendations".
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick links -->
+    <div class="col-md-5">
+        <div class="card mb-4">
+            <div class="card-header"><i class="bi bi-lightning me-2 text-primary"></i>Quick Actions</div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'kcse_results' %}" class="btn btn-outline-success btn-sm text-start">
+                    <i class="bi bi-clipboard-data me-2"></i>{% if has_kcse %}Update{% else %}Enter{% endif %} KCSE Results
+                </a>
+                <a href="{% url 'student_interests' %}" class="btn btn-outline-danger btn-sm text-start">
+                    <i class="bi bi-heart me-2"></i>{% if has_interests %}Update{% else %}Complete{% endif %} Interest Survey
+                </a>
+                <a href="{% url 'university_performance' %}" class="btn btn-outline-info btn-sm text-start">
+                    <i class="bi bi-bar-chart me-2"></i>Add University Grades
+                </a>
+                <a href="{% url 'program_list' %}" class="btn btn-outline-secondary btn-sm text-start">
+                    <i class="bi bi-book me-2"></i>Browse All Programs
+                </a>
+            </div>
+        </div>
+
+        <!-- Sessions -->
+        <div class="card">
+            <div class="card-header"><i class="bi bi-calendar me-2 text-info"></i>Advisory Sessions</div>
+            <div class="card-body p-0">
+                {% if sessions %}
+                <div class="list-group list-group-flush">
+                    {% for s in sessions %}
+                    <div class="list-group-item px-3 py-2">
+                        <div class="small fw-semibold">{{ s.advisor.user.get_full_name }}</div>
+                        <div class="small text-muted">{{ s.scheduled_date|date:"d M Y, H:i" }}</div>
+                        <span class="badge bg-{% if s.status == 'completed' %}success{% elif s.status == 'cancelled' %}danger{% else %}primary{% endif %} mt-1">{{ s.status }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3 small">No sessions scheduled yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

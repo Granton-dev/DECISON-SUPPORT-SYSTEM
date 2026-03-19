@@ -1,0 +1,47 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}Edit Profile – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0"><i class="bi bi-person-fill me-2 text-primary"></i>My Profile</h4>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        {% for field in form %}
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                            {% if field.field.widget.input_type == 'select' %}
+                            <select name="{{ field.html_name }}" class="form-select {% if field.errors %}is-invalid{% endif %}">
+                                {% for val, lbl in field.field.choices %}
+                                <option value="{{ val }}" {% if field.value == val %}selected{% endif %}>{{ lbl }}</option>
+                                {% endfor %}
+                            </select>
+                            {% elif field.name == 'bio' %}
+                            <textarea name="{{ field.html_name }}" class="form-control {% if field.errors %}is-invalid{% endif %}" rows="3">{{ field.value|default:'' }}</textarea>
+                            {% else %}
+                            <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.html_name }}"
+                                   class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                   value="{{ field.value|default:'' }}">
+                            {% endif %}
+                            {% for e in field.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-2"></i>Save Profile
+                        </button>
+                        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

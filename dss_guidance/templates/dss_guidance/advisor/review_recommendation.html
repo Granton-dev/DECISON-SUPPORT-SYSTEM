@@ -1,0 +1,80 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}Review Recommendation – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'advisor_student_detail' rec.student.id %}" class="text-muted small">
+        <i class="bi bi-arrow-left me-1"></i>Back to Student
+    </a>
+    <h4 class="fw-bold mt-1 mb-0">Review Recommendation</h4>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card mb-3">
+            <div class="card-header">Student</div>
+            <div class="card-body">
+                <div class="fw-semibold fs-5">{{ rec.student.user.get_full_name }}</div>
+                <div class="text-muted small mb-2">{{ rec.student.student_id }}</div>
+                {% if rec.student.kcse_result %}
+                <span class="badge bg-success me-1">KCSE: {{ rec.student.kcse_result.overall_grade }}</span>
+                <span class="badge bg-outline-secondary border">{{ rec.student.kcse_result.total_points }} pts</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Recommended Program</div>
+            <div class="card-body">
+                <div class="fw-semibold fs-6">{{ rec.program.name }}</div>
+                <div class="text-muted small mb-2">{{ rec.program.code }} &bull; {{ rec.program.get_faculty_display }}</div>
+                <div class="mb-2">
+                    <span class="badge badge-score {% if rec.match_score >= 70 %}score-high{% elif rec.match_score >= 50 %}score-mid{% else %}score-low{% endif %}">
+                        Match: {{ rec.match_score }}%
+                    </span>
+                </div>
+                <div class="progress mb-3" style="height:8px">
+                    <div class="progress-bar {% if rec.match_score >= 70 %}bg-success{% elif rec.match_score >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                         style="width:{{ rec.match_score }}%"></div>
+                </div>
+                <p class="small text-muted">{{ rec.reasoning }}</p>
+                <hr>
+                <small class="text-muted">Min. grade required: <strong>{{ rec.program.minimum_grade }}</strong> ({{ rec.program.minimum_points }} pts)</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-pencil-square me-2"></i>Advisor Review</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                        {% if field.field.widget.input_type == 'select' %}
+                        <select name="{{ field.html_name }}" class="form-select {% if field.errors %}is-invalid{% endif %}">
+                            {% for val, lbl in field.field.choices %}
+                            <option value="{{ val }}" {% if field.value == val %}selected{% endif %}>{{ lbl }}</option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <textarea name="{{ field.html_name }}" class="form-control {% if field.errors %}is-invalid{% endif %}" rows="5"
+                                  placeholder="Add your professional notes on this recommendation...">{{ field.value|default:'' }}</textarea>
+                        {% endif %}
+                        {% for e in field.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>Save Review
+                        </button>
+                        <a href="{% url 'advisor_student_detail' rec.student.id %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

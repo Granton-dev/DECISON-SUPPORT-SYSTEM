@@ -1,0 +1,84 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}{{ program.name }} – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'program_list' %}" class="text-muted small">
+        <i class="bi bi-arrow-left me-1"></i>Back to Programs
+    </a>
+    <h4 class="fw-bold mt-1 mb-0">{{ program.name }}</h4>
+    <small class="text-muted">{{ program.code }} &bull; {{ program.get_faculty_display }} Faculty &bull; {{ program.duration_years }} years</small>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">About This Program</div>
+            <div class="card-body">
+                <p>{{ program.description }}</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header"><i class="bi bi-briefcase me-2 text-success"></i>Career Opportunities</div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    {% for career in program.get_career_paths_list %}
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2">{{ career }}</span>
+                    {% empty %}
+                    <p class="text-muted small mb-0">No career data available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><i class="bi bi-tools me-2 text-primary"></i>Skills You Will Develop</div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    {% for skill in program.get_skills_list %}
+                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2">{{ skill }}</span>
+                    {% empty %}
+                    <p class="text-muted small mb-0">No skills data available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header"><i class="bi bi-clipboard-check me-2 text-warning"></i>Entry Requirements</div>
+            <div class="card-body">
+                <div class="mb-3 p-3 bg-light rounded text-center">
+                    <div class="fw-bold fs-3">{{ program.minimum_grade }}</div>
+                    <small class="text-muted">Minimum KCSE Grade</small>
+                </div>
+                <div class="mb-3 p-3 bg-light rounded text-center">
+                    <div class="fw-bold fs-3">{{ program.minimum_points }}</div>
+                    <small class="text-muted">Minimum Points (out of 84)</small>
+                </div>
+                {% if program.get_required_subjects_list %}
+                <h6 class="fw-semibold small text-muted text-uppercase mb-2">Required Subjects</h6>
+                <ul class="list-unstyled mb-0">
+                    {% for subj in program.get_required_subjects_list %}
+                    <li class="small mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ subj }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if request.user.student_profile %}
+        <div class="card">
+            <div class="card-body text-center">
+                <p class="small text-muted mb-3">Interested in this program?</p>
+                <a href="{% url 'get_recommendations' %}" class="btn btn-primary w-100 mb-2">
+                    <i class="bi bi-lightbulb me-2"></i>Get My Recommendations
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

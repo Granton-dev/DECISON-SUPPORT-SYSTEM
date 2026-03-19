@@ -1,0 +1,48 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}Login – UoEmbu DSS{% endblock %}
+
+{% block auth_content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="text-center mb-4">
+            <i class="bi bi-mortarboard-fill text-success" style="font-size: 3rem;"></i>
+            <h3 class="mt-2 fw-bold">University of Embu</h3>
+            <p class="text-muted">Academic Guidance & Career Advisory DSS</p>
+        </div>
+        <div class="card p-4">
+            <h5 class="card-title mb-4 text-center">Sign In</h5>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}"
+                           name="{{ field.html_name }}"
+                           class="form-control {% if field.errors %}is-invalid{% endif %}"
+                           placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
+                           value="{{ field.value|default:'' }}">
+                    {% for error in field.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary w-100 mt-2">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </button>
+            </form>
+        </div>
+        <div class="text-center mt-3">
+            <p class="text-muted mb-1">Don't have an account?</p>
+            <a href="{% url 'register_student' %}" class="btn btn-outline-success btn-sm me-2">
+                <i class="bi bi-person-plus me-1"></i>Student Registration
+            </a>
+            <a href="{% url 'register_advisor' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-person-badge me-1"></i>Advisor Registration
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

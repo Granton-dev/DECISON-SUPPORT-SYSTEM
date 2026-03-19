@@ -1,0 +1,137 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}Advisor Dashboard – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-0">Welcome, {{ advisor.user.first_name }}!</h4>
+        <small class="text-muted">{{ advisor.staff_id }} &bull; {{ advisor.department }}</small>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'schedule_session' %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-calendar-plus me-1"></i>Schedule Session
+        </a>
+        <a href="{% url 'advisor_reports' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-file-bar-graph me-1"></i>Reports
+        </a>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <i class="bi bi-people-fill text-primary fs-3 mb-1"></i>
+            <div class="fw-bold fs-4">{{ total_students }}</div>
+            <div class="text-muted small">Assigned Students</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <i class="bi bi-hourglass-split text-warning fs-3 mb-1"></i>
+            <div class="fw-bold fs-4">{{ pending_count }}</div>
+            <div class="text-muted small">Pending Reviews</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <i class="bi bi-calendar-check text-success fs-3 mb-1"></i>
+            <div class="fw-bold fs-4">{{ upcoming_sessions|length }}</div>
+            <div class="text-muted small">Upcoming Sessions</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3">
+            <i class="bi bi-building text-info fs-3 mb-1"></i>
+            <div class="fw-bold fs-4 text-truncate" style="font-size:1rem!important">{{ advisor.department|truncatechars:12 }}</div>
+            <div class="text-muted small">Department</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Pending Recommendations -->
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-hourglass-split text-warning me-2"></i>Pending Recommendation Reviews</span>
+            </div>
+            <div class="card-body p-0">
+                {% if pending_recs %}
+                <div class="list-group list-group-flush">
+                    {% for rec in pending_recs %}
+                    <div class="list-group-item px-3 py-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="fw-semibold">{{ rec.student.user.get_full_name }}</div>
+                                <small class="text-muted">{{ rec.student.student_id }} → {{ rec.program.name }}</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge badge-score {% if rec.match_score >= 70 %}score-high{% elif rec.match_score >= 50 %}score-mid{% else %}score-low{% endif %}">
+                                    {{ rec.match_score }}%
+                                </span>
+                                <a href="{% url 'review_recommendation' rec.id %}" class="btn btn-sm btn-outline-primary">
+                                    Review
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-4">No pending recommendations to review.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming sessions + student list -->
+    <div class="col-md-5">
+        <div class="card mb-4">
+            <div class="card-header"><i class="bi bi-calendar-event me-2 text-info"></i>Upcoming Sessions</div>
+            <div class="card-body p-0">
+                {% if upcoming_sessions %}
+                <div class="list-group list-group-flush">
+                    {% for s in upcoming_sessions %}
+                    <div class="list-group-item px-3 py-2">
+                        <div class="fw-semibold small">{{ s.student.user.get_full_name }}</div>
+                        <div class="text-muted small">{{ s.scheduled_date|date:"d M Y, H:i" }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3 small">No upcoming sessions.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-people me-2"></i>My Students</span>
+                <a href="{% url 'advisor_students' %}" class="btn btn-sm btn-outline-secondary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                {% if students %}
+                <div class="list-group list-group-flush">
+                    {% for student in students|slice:":6" %}
+                    <a href="{% url 'advisor_student_detail' student.id %}" class="list-group-item list-group-item-action px-3 py-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="small fw-semibold">{{ student.user.get_full_name }}</div>
+                                <div class="text-muted" style="font-size:0.75rem;">{{ student.student_id }}</div>
+                            </div>
+                            <span class="badge bg-light text-dark border align-self-center">
+                                Yr {{ student.year_of_study|default:"?" }}
+                            </span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3 small">No students assigned yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

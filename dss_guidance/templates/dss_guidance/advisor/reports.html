@@ -1,0 +1,144 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}Reports – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0"><i class="bi bi-file-bar-graph-fill me-2 text-primary"></i>Reports & Analytics</h4>
+</div>
+
+<!-- Summary Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-2">
+        <div class="card text-center p-3">
+            <div class="fw-bold fs-3 text-primary">{{ total_students }}</div>
+            <div class="text-muted small">Total Students</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="card text-center p-3">
+            <div class="fw-bold fs-3 text-success">{{ students_with_kcse }}</div>
+            <div class="text-muted small">With KCSE Data</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="card text-center p-3">
+            <div class="fw-bold fs-3 text-danger">{{ students_with_interests }}</div>
+            <div class="text-muted small">Completed Survey</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="card text-center p-3">
+            <div class="fw-bold fs-3 text-warning">{{ total_recs }}</div>
+            <div class="text-muted small">Total Recs</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="card text-center p-3">
+            <div class="fw-bold fs-3 text-info">{{ accepted_recs }}</div>
+            <div class="text-muted small">Accepted Recs</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="card text-center p-3">
+            {% if total_recs > 0 %}
+            <div class="fw-bold fs-3 text-success">{{ accepted_recs|floatformat:0 }}<small class="fs-6">/{{ total_recs }}</small></div>
+            {% else %}
+            <div class="fw-bold fs-3 text-muted">–</div>
+            {% endif %}
+            <div class="text-muted small">Accept Rate</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Program Demand -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-bar-chart me-2"></i>Most Recommended Programs</div>
+            <div class="card-body">
+                {% if program_demand %}
+                {% for item in program_demand %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small class="fw-semibold">{{ item.program__name|truncatechars:35 }}</small>
+                        <small class="text-muted">{{ item.count }}</small>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        {% with max_count=program_demand.0.count %}
+                        <div class="progress-bar bg-primary"
+                             style="width: {% widthratio item.count max_count 100 %}%"></div>
+                        {% endwith %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-muted small mb-0">No recommendation data yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Faculty Distribution -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><i class="bi bi-pie-chart me-2"></i>Faculty Interest Distribution</div>
+            <div class="card-body">
+                {% if faculty_dist %}
+                {% for item in faculty_dist %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small class="fw-semibold">{{ item.faculty|title }}</small>
+                        <small class="text-muted">{{ item.count }}</small>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        {% with max_count=faculty_dist.0.count %}
+                        <div class="progress-bar bg-success"
+                             style="width: {% widthratio item.count max_count 100 %}%"></div>
+                        {% endwith %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-muted small mb-0">No faculty data yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Completion -->
+<div class="card mt-4">
+    <div class="card-header"><i class="bi bi-person-check me-2"></i>Student Profile Completion</div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <p class="text-muted small mb-1">KCSE Results Added</p>
+                <div class="progress mb-1" style="height: 12px;">
+                    {% if total_students > 0 %}
+                    <div class="progress-bar bg-success" style="width: {% widthratio students_with_kcse total_students 100 %}%"></div>
+                    {% endif %}
+                </div>
+                <small>{{ students_with_kcse }} / {{ total_students }} students</small>
+            </div>
+            <div class="col-md-4">
+                <p class="text-muted small mb-1">Interest Survey Completed</p>
+                <div class="progress mb-1" style="height: 12px;">
+                    {% if total_students > 0 %}
+                    <div class="progress-bar bg-danger" style="width: {% widthratio students_with_interests total_students 100 %}%"></div>
+                    {% endif %}
+                </div>
+                <small>{{ students_with_interests }} / {{ total_students }} students</small>
+            </div>
+            <div class="col-md-4">
+                <p class="text-muted small mb-1">Recommendations Accepted</p>
+                <div class="progress mb-1" style="height: 12px;">
+                    {% if total_recs > 0 %}
+                    <div class="progress-bar bg-warning" style="width: {% widthratio accepted_recs total_recs 100 %}%"></div>
+                    {% endif %}
+                </div>
+                <small>{{ accepted_recs }} / {{ total_recs }} recommendations</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}Academic Programs – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0"><i class="bi bi-book-fill me-2 text-secondary"></i>Academic Programs</h4>
+    <span class="badge bg-secondary fs-6">{{ programs|length }} program{{ programs|length|pluralize }}</span>
+</div>
+
+<!-- Faculty filter -->
+<div class="mb-4 d-flex flex-wrap gap-2">
+    <a href="{% url 'program_list' %}" class="btn btn-sm {% if not selected_faculty %}btn-secondary{% else %}btn-outline-secondary{% endif %}">All</a>
+    {% for val, label in faculties %}
+    <a href="?faculty={{ val }}" class="btn btn-sm {% if selected_faculty == val %}btn-secondary{% else %}btn-outline-secondary{% endif %}">{{ label }}</a>
+    {% endfor %}
+</div>
+
+<div class="row g-3">
+    {% for program in programs %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-{% if program.faculty == 'computing' %}primary{% elif program.faculty == 'business' %}success{% elif program.faculty == 'agriculture' %}warning text-dark{% elif program.faculty == 'education' %}info{% elif program.faculty == 'science' %}danger{% else %}secondary{% endif %}">
+                        {{ program.get_faculty_display }}
+                    </span>
+                    <small class="text-muted">{{ program.duration_years }} yrs</small>
+                </div>
+                <h6 class="fw-bold mb-1">{{ program.name }}</h6>
+                <code class="small text-muted">{{ program.code }}</code>
+                <p class="small text-muted mt-2 mb-2">{{ program.description|truncatewords:20 }}</p>
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                    <span class="badge bg-light text-dark border">Min. {{ program.minimum_grade }}</span>
+                    <span class="badge bg-light text-dark border">{{ program.minimum_points }} pts</span>
+                </div>
+                {% if program.get_career_paths_list %}
+                <div class="mb-2">
+                    {% for career in program.get_career_paths_list|slice:":2" %}
+                    <span class="badge bg-light text-secondary border me-1 mb-1" style="font-size:0.7rem">{{ career }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <a href="{% url 'program_detail' program.pk %}" class="btn btn-sm btn-outline-primary mt-auto">
+                    <i class="bi bi-info-circle me-1"></i>View Details
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center text-muted py-5">
+                <i class="bi bi-book fs-1 mb-2 d-block"></i>
+                No programs found. Add programs via the admin panel.
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

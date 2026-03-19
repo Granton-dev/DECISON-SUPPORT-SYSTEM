@@ -1,0 +1,203 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}My Interests – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0"><i class="bi bi-heart-fill text-danger me-2"></i>Career Interest Survey</h4>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <p class="text-muted mb-4">Rate your interest level in each field from 1 (Not Interested) to 5 (Very Interested).</p>
+        <form method="post">
+            {% csrf_token %}
+
+            <h6 class="fw-semibold mb-3">Career Field Interests</h6>
+            <div class="row g-4 mb-4">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Technology</label>
+                    <div class="d-flex gap-3">
+                        {% for val, lbl in form.technology.field.choices %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="technology"
+                                   id="technology_{{ val }}" value="{{ val }}"
+                                   {% if form.technology.value == val|stringformat:"s" %}checked{% endif %}>
+                            <label class="form-check-label" for="technology_{{ val }}">{{ val }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">1 = Not Interested &nbsp;|&nbsp; 5 = Very Interested</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Business & Finance</label>
+                    <div class="d-flex gap-3">
+                        {% for val, lbl in form.business_finance.field.choices %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="business_finance"
+                                   id="business_finance_{{ val }}" value="{{ val }}"
+                                   {% if form.business_finance.value == val|stringformat:"s" %}checked{% endif %}>
+                            <label class="form-check-label" for="business_finance_{{ val }}">{{ val }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">1 = Not Interested &nbsp;|&nbsp; 5 = Very Interested</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Healthcare</label>
+                    <div class="d-flex gap-3">
+                        {% for val, lbl in form.healthcare.field.choices %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="healthcare"
+                                   id="healthcare_{{ val }}" value="{{ val }}"
+                                   {% if form.healthcare.value == val|stringformat:"s" %}checked{% endif %}>
+                            <label class="form-check-label" for="healthcare_{{ val }}">{{ val }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">1 = Not Interested &nbsp;|&nbsp; 5 = Very Interested</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Education & Teaching</label>
+                    <div class="d-flex gap-3">
+                        {% for val, lbl in form.education_teaching.field.choices %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="education_teaching"
+                                   id="education_teaching_{{ val }}" value="{{ val }}"
+                                   {% if form.education_teaching.value == val|stringformat:"s" %}checked{% endif %}>
+                            <label class="form-check-label" for="education_teaching_{{ val }}">{{ val }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">1 = Not Interested &nbsp;|&nbsp; 5 = Very Interested</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Agriculture & Environment</label>
+                    <div class="d-flex gap-3">
+                        {% for val, lbl in form.agriculture_environment.field.choices %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="agriculture_environment"
+                                   id="agriculture_environment_{{ val }}" value="{{ val }}"
+                                   {% if form.agriculture_environment.value == val|stringformat:"s" %}checked{% endif %}>
+                            <label class="form-check-label" for="agriculture_environment_{{ val }}">{{ val }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">1 = Not Interested &nbsp;|&nbsp; 5 = Very Interested</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Engineering</label>
+                    <div class="d-flex gap-3">
+                        {% for val, lbl in form.engineering.field.choices %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="engineering"
+                                   id="engineering_{{ val }}" value="{{ val }}"
+                                   {% if form.engineering.value == val|stringformat:"s" %}checked{% endif %}>
+                            <label class="form-check-label" for="engineering_{{ val }}">{{ val }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">1 = Not Interested &nbsp;|&nbsp; 5 = Very Interested</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Research & Science</label>
+                    <div class="d-flex gap-3">
+                        {% for val, lbl in form.research_science.field.choices %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="research_science"
+                                   id="research_science_{{ val }}" value="{{ val }}"
+                                   {% if form.research_science.value == val|stringformat:"s" %}checked{% endif %}>
+                            <label class="form-check-label" for="research_science_{{ val }}">{{ val }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">1 = Not Interested &nbsp;|&nbsp; 5 = Very Interested</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Arts & Communication</label>
+                    <div class="d-flex gap-3">
+                        {% for val, lbl in form.arts_communication.field.choices %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="arts_communication"
+                                   id="arts_communication_{{ val }}" value="{{ val }}"
+                                   {% if form.arts_communication.value == val|stringformat:"s" %}checked{% endif %}>
+                            <label class="form-check-label" for="arts_communication_{{ val }}">{{ val }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">1 = Not Interested &nbsp;|&nbsp; 5 = Very Interested</small>
+                </div>
+
+            </div>
+
+            <hr class="my-3">
+            <h6 class="fw-semibold mb-3">Work Style Preferences</h6>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="prefers_fieldwork"
+                               id="prefers_fieldwork"
+                               {% if form.prefers_fieldwork.value %}checked{% endif %}>
+                        <label class="form-check-label" for="prefers_fieldwork">Fieldwork</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="prefers_research"
+                               id="prefers_research"
+                               {% if form.prefers_research.value %}checked{% endif %}>
+                        <label class="form-check-label" for="prefers_research">Research</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="prefers_people_interaction"
+                               id="prefers_people_interaction"
+                               {% if form.prefers_people_interaction.value %}checked{% endif %}>
+                        <label class="form-check-label" for="prefers_people_interaction">People Interaction</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="prefers_technical_work"
+                               id="prefers_technical_work"
+                               {% if form.prefers_technical_work.value %}checked{% endif %}>
+                        <label class="form-check-label" for="prefers_technical_work">Technical Work</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Preferred Work Location</label>
+                    <select name="preferred_work_location" class="form-select">
+                        <option value="urban" {% if form.preferred_work_location.value == 'urban' %}selected{% endif %}>Urban</option>
+                        <option value="rural" {% if form.preferred_work_location.value == 'rural' %}selected{% endif %}>Rural</option>
+                        <option value="both" {% if form.preferred_work_location.value == 'both' or not form.preferred_work_location.value %}selected{% endif %}>Both</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Career Goal</label>
+                    <textarea name="career_goal" class="form-control" rows="3"
+                              placeholder="Describe your career aspirations...">{{ form.career_goal.value|default:'' }}</textarea>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-2"></i>Save Interests
+                </button>
+                <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}KCSE Results – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0"><i class="bi bi-clipboard-data me-2 text-success"></i>KCSE Results</h4>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">KCSE Index Number <span class="text-danger">*</span></label>
+                    <input type="text" name="index_number"
+                           class="form-control {% if form.index_number.errors %}is-invalid{% endif %}"
+                           value="{{ form.index_number.value|default:'' }}">
+                    {% for e in form.index_number.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Year of Examination <span class="text-danger">*</span></label>
+                    <input type="number" name="year"
+                           class="form-control {% if form.year.errors %}is-invalid{% endif %}"
+                           value="{{ form.year.value|default:'' }}" min="2000" max="2030">
+                    {% for e in form.year.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Overall Grade <span class="text-danger">*</span></label>
+                    <select name="overall_grade" class="form-select {% if form.overall_grade.errors %}is-invalid{% endif %}">
+                        <option value="">-- Select --</option>
+                        {% for val, lbl in form.overall_grade.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.overall_grade.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                    {% for e in form.overall_grade.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Total Points <span class="text-danger">*</span></label>
+                    <input type="number" name="total_points"
+                           class="form-control {% if form.total_points.errors %}is-invalid{% endif %}"
+                           value="{{ form.total_points.value|default:'' }}" min="0" max="84">
+                    <small class="text-muted">Out of 84</small>
+                    {% for e in form.total_points.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+                </div>
+            </div>
+
+            <hr class="my-3">
+            <h6 class="fw-semibold mb-3">
+                <i class="bi bi-journal me-2"></i>Subject Grades
+                <small class="text-muted fw-normal">(leave blank if not taken)</small>
+            </h6>
+
+            <div class="row g-3">
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">Mathematics</label>
+                    <select name="mathematics" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.mathematics.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.mathematics.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">English</label>
+                    <select name="english" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.english.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.english.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">Kiswahili</label>
+                    <select name="kiswahili" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.kiswahili.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.kiswahili.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">Biology</label>
+                    <select name="biology" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.biology.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.biology.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">Chemistry</label>
+                    <select name="chemistry" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.chemistry.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.chemistry.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">Physics</label>
+                    <select name="physics" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.physics.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.physics.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">History</label>
+                    <select name="history" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.history.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.history.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">Geography</label>
+                    <select name="geography" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.geography.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.geography.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">Business Studies</label>
+                    <select name="business_studies" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.business_studies.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.business_studies.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">Agriculture</label>
+                    <select name="agriculture" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.agriculture.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.agriculture.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold">Computer Studies</label>
+                    <select name="computer_studies" class="form-select form-select-sm">
+                        <option value="">Not taken</option>
+                        {% for val, lbl in form.computer_studies.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if form.computer_studies.value == val %}selected{% endif %}>{{ val }}</option>{% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-2"></i>Save KCSE Results
+                </button>
+                <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

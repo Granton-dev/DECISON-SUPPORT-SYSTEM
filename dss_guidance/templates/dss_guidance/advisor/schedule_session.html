@@ -1,0 +1,50 @@
+{% extends 'dss_guidance/base.html' %}
+{% block title %}Schedule Session – UoEmbu DSS{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'advisor_dashboard' %}" class="text-muted small">
+        <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+    </a>
+    <h4 class="fw-bold mt-1 mb-0">Schedule Advisory Session</h4>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ field.label }} {% if field.field.required %}<span class="text-danger">*</span>{% endif %}</label>
+                        {% if field.field.widget.input_type == 'select' %}
+                        <select name="{{ field.html_name }}" class="form-select {% if field.errors %}is-invalid{% endif %}">
+                            <option value="">-- Select Student --</option>
+                            {% for val, lbl in field.field.choices %}
+                            {% if val %}<option value="{{ val }}" {% if field.value == val %}selected{% endif %}>{{ lbl }}</option>{% endif %}
+                            {% endfor %}
+                        </select>
+                        {% elif field.name == 'notes' %}
+                        <textarea name="{{ field.html_name }}" class="form-control {% if field.errors %}is-invalid{% endif %}" rows="3"
+                                  placeholder="Session agenda or notes...">{{ field.value|default:'' }}</textarea>
+                        {% else %}
+                        <input type="{{ field.field.widget.attrs.type|default:'text' }}" name="{{ field.html_name }}"
+                               class="form-control {% if field.errors %}is-invalid{% endif %}"
+                               value="{{ field.value|default:'' }}">
+                        {% endif %}
+                        {% for e in field.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-calendar-check me-2"></i>Schedule Session
+                        </button>
+                        <a href="{% url 'advisor_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
